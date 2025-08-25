@@ -1,5 +1,11 @@
 # Session‑Based Correlation for Search & Discovery
 
+The main idea presented below was that everything in a session is related.  
+
+Based upon the following patents
+* [7181447](https://patents.justia.com/patent/7181447) - Methods and systems for conceptually organizing and presenting information
+* [7152061](https://patents.justia.com/patent/7152061), [7451131](https://patents.justia.com/patent/7451131), [7739274](https://patents.justia.com/patent/7739274), [7984048](https://patents.justia.com/patent/7984048), [8037087](https://patents.justia.com/patent/8037087), [8065299](https://patents.justia.com/patent/8065299) - Methods and systems for providing a response to a query
+
 ## Table of Contents
 
 1. Foundations & Data Model

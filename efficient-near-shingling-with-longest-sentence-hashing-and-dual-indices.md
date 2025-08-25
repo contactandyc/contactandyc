@@ -1,5 +1,7 @@
 # Efficient Near-Shingling with Longest-Sentence Hashing and Dual Indices
 
+An AI overview of an approach I worked out to very efficiently detect similar documents at scale.
+
 ## Overview
 
 This approach proposes a method for high-efficiency text similarity detection that approximates the accuracy of traditional shingling methods while significantly reducing computational and storage costs. It leverages **title + longest-sentence hashing**, **dual forward/inverted indices**, and **cosine weighting with precomputed norms**.

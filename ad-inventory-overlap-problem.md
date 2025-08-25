@@ -1,8 +1,12 @@
 # Real-Time Ad Inventory System with Inverted Index
 
+The following is an AI overview on the patent application in the link.  The ideas below represent determining ad inventory and isn't meant for serving.  It isn't too much of a stretch to convert this to an ad serving technology.
+
+## Overview
+
 This document describes how to design and implement a real-time advertisement inventory system capable of handling millions of ad buys with overlapping targeting criteria. It is based on representing ad inventory as sets of impression slots, then using inverted indices and efficient allocation algorithms to scale.
 
-- https://patents.justia.com/patent/20140279051
+- [20140279051](https://patents.justia.com/patent/20140279051)
 ---
 
 ## 1. Problem Definition

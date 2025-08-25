@@ -1,4 +1,6 @@
-# Improving Search Relevance via Unexpected Frequency Correlation
+# Expected Frequency and Long Correlation
+
+An AI based description of an algorithm which enabled me to create great recommendations and better search using spare sessions.  I've found it to work on many different datasets and have been continuously developing the approach.
 
 ## Overview
 

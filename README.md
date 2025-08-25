@@ -1,3 +1,31 @@
+## Inventions through the years
+
+### [EzResult (1998–1999)](https://github.com/contactandyc/contactandyc/blob/main/search-engine-architecture.md)
+
+EzResult was a web-scale search engine I built and sold at age 21. Written entirely in C/C++/assembly, it independently rediscovered inverted indices, tries, and cosine similarity, and included a pre-Hadoop distributed data platform that wrote sorted, compressed chunks for efficient exchange. EzResult was also unique at the time for supporting instant updates — user-submitted sites appeared in the index within seconds. Yahoo rated it second only to Google in relevance, and it was acquired in 1999.
+
+### [Efficient Near-Shingling with Longest-Sentence Hashing and Dual Indices (2001)](https://github.com/contactandyc/contactandyc/blob/main/efficient-near-shingling-with-longest-sentence-hashing-and-dual-indexes.md)
+
+A high-efficiency approach to near-duplicate detection that approximates shingling accuracy while being vastly cheaper to run. Documents are reduced to title + first + 10 longest sentence hashes, indexed in dual forward/inverted indices, and compared with cosine weighting using precomputed norms. This design cut storage and compute costs by orders of magnitude while retaining strong accuracy, enabling large-scale similarity detection years before modern deduplication frameworks.
+
+### [Click based search and recommendation algorithms (2003-2005)](https://github.com/contactandyc/contactandyc/blob/main/session-based-correlation-for-search-and-discovery.md)
+
+A framework that leverages full user sessions (queries + clicks) to learn correlations and improve ranking, suggestions, personalization, and localization in search and discovery.
+
+### [Expected frequency and long correlation (2009+)](https://github.com/contactandyc/contactandyc/blob/main/expected-frequency-and-long-correlation.md)
+
+An algorithm for recommendations and search that leverages entire user histories, not just short sessions. By adjusting local co-occurrence with an expected vs. actual frequency correction, it removes global popularity bias and surfaces unexpected associations. Extended with vector similarity for clustering, this approach has produced strong recommendations across many datasets.  Works well on netflix kaggle competition data, but also applied to many other datasets.
+
+### [Ad inventory overlapping set problem (2011-2012)](https://github.com/contactandyc/contactandyc/blob/main/ad-inventory-overlap-problem.md)
+
+While working on large-scale advertising systems, I designed a real-time ad inventory model to handle millions of buys with overlapping targeting criteria. The system represented impressions as discrete slots and used inverted indices plus bitmap intersections to efficiently evaluate eligibility. A novel link → award → re-link allocation algorithm resolved conflicts so high-value, capped buys won priority without materializing full slot sets. This approach enabled fast “what-if” queries, accurate forecasting, and scalable allocation at web scale.
+
+### [Quicksort improvement (2019)](https://github.com/contactandyc/contactandyc/blob/main/improving-quicksort.md)
+
+In 2019, I designed a small but powerful improvement to quicksort/introsort. By reusing the pivot sample to detect when input is already sorted, reverse-sorted, or all-equal, the algorithm can finish in O(n) with a single verification pass (or reversal). On real datasets this yields 5–30× speedups for sorted inputs, with negligible overhead on random data, and no regressions on adversarial cases.
+
+I've worked on many other ideas, but these are ones I feel comfortable sharing as they are largely in the public domain at this point.
+
 ## My open source libraries
 
 These libraries form a cohesive ecosystem of modern C components — covering memory management, parsing, networking, embeddings, indexing, and file I/O — all designed with **performance, simplicity, and composability** in mind.
