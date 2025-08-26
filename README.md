@@ -1,4 +1,4 @@
-## Inventions through the years
+## Selective works through the years
 
 ### [EzResult (1998–1999)](https://github.com/contactandyc/contactandyc/blob/main/search-engine-architecture.md)
 
