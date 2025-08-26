@@ -1,191 +1,194 @@
-# Real-Time Ad Inventory System with Inverted Index
+# Real‑Time Ad Inventory System with Direct‑Access Table (Inventory‑Only)
 
-The following is an AI overview on the patent application in the link.  The ideas below represent determining ad inventory and isn't meant for serving.  It isn't too much of a stretch to convert this to an ad serving technology.
+*AI‑generated technical overview of published application **20140279051**. Focus: **inventory computation** and **what‑if queries**, not ad serving.*
 
-## Overview
+## Executive Essence
 
-This document describes how to design and implement a real-time advertisement inventory system capable of handling millions of ad buys with overlapping targeting criteria. It is based on representing ad inventory as sets of impression slots, then using inverted indices and efficient allocation algorithms to scale.
+1. **Model future opportunities as a direct‑access table (DAT) of impression slots.**
+   Each slot is a discrete attribute combination with an optional **weight** (forecasted count).
 
-- [20140279051](https://patents.justia.com/patent/20140279051)
+2. **Treat each ad (and each query) as an expression over attributes → an impression set.**
+   Each has a comparable **value** (e.g., eCPM) and an optional **goal/cap**.
+
+3. **Single‑scan assignment with pointers.**
+
+  * **Link pointer** (tentative): at most one per ad at a time into one eligible slot.
+  * **Award pointer** (final): the slot’s winner after resolving contentions by **value**.
+  * After an award, the **winner** re‑links forward; any **loser** re‑links forward. Iterators only move forward.
+
+4. **Two‑pass mode for what‑ifs and unsold inventory.**
+
+  * **Pass‑1:** block the query’s footprint; allocate everything else → shows **true unsold** while preserving other buys.
+  * **Pass‑2:** block non‑query slots; include the query as a buy → shows **what the query would win**.
+
+Result: **Real‑time visibility** into value‑optimized winners and **unsold** inventory with O(1) per‑slot access and forward‑only re‑linking.
+
 ---
 
-## 1. Problem Definition
+## 1) Entities & Definitions
 
-Digital media providers have a finite number of ad impression opportunities ("slots"). Advertisers purchase these slots by specifying targeting criteria (e.g., demographics, context, geography, time). Each purchase (ad buy) is essentially a set of eligible slots.
-
-Challenges:
-
-* **Overlapping sets:** Multiple buys compete for the same slots.
-* **Different values:** Buys pay different CPMs; higher CPM buys should win first.
-* **Caps/quotas:** Some buys only want a fixed number of impressions.
-* **Queries/what-ifs:** Media providers must simulate how new buys would fit into current inventory.
+* **Impression slot (slot):** bucketed opportunity defined by attributes (site, placement, time bucket, device, geo, age band, etc.).
+  Fields: `forecast` (weight), `remaining`, compact `attr_key`.
+* **Impression set (of an ad):** the set of `slot_id`s that satisfy the ad’s predicate.
+* **Value:** comparable scalar used to break ties; may include pacing/priority multipliers.
+* **Query:** an ad‑shaped request used for **Pass‑1 blocking** and **Pass‑2 competition**.
 
 ---
 
-## 2. Representing Impressions as Slots
+## 2) Direct‑Access Table (DAT)
 
-### Slot Model
-
-Each impression opportunity is bucketed into a **slot** defined by attributes:
-
-* Example attributes: site, placement, time bucket, device, gender, age range, hair color, weight range, geo.
+O(1) per‑slot structure keyed by `slot_id`:
 
 ```c
-struct Slot {
-  uint32_t forecast;   // forecasted impressions in window
-  uint32_t remaining;  // decremented during allocation
-  uint64_t attr_key;   // packed attribute codes (or side table reference)
-};
+struct DATEntry { int32_t linked_ad; int32_t awarded_ad; };
+DATEntry DAT[U]; // U = number of slots
 ```
 
-A dense slot\_id (`0..U-1`) indexes slots.
+Scan slots in numeric order; keep each ad’s iterator **forward‑only**.
 
 ---
 
-## 3. Inverted Index
+## 3) Building the Slot Universe
 
-### Terms
+1. Choose binning for each attribute dimension (pre‑bin numeric ranges).
+2. Enumerate expected/forecasted combinations for the planning window → dense `slot_id ∈ [0..U-1]`.
+3. Initialize `forecast[slot_id]`, `remaining[slot_id]=forecast`, `attr_key`.
 
-A **term** = one attribute/value or bin, e.g.:
-
-* `gender=F`, `age=35-39`, `site=example.com`, `time=2025-08-25T12`.
-
-### Postings
-
-For each term, maintain the set of slots that contain that term. Store as:
-
-* **Roaring bitmap** (default): compressed, fast set operations.
-* **List\<uint32\_t>** for sparse terms.
-* **Bitset** for very dense terms.
-
-### Memory Considerations
-
-* Forward slot table: `U * ~16–32 bytes`.
-* Inverted index: depends on term density. Hybrid (list/bitmap/bitset) keeps usage reasonable.
-* Buys: store as predicate trees + iterators; do not materialize full slot sets.
+> Only materialize combinations you expect to see.
 
 ---
 
-## 4. Compiling Ad Buys
+## 4) Optional: Inverted Index for Matching (kept simple)
 
-Each buy’s predicate is compiled into Boolean operations over postings:
+An inverted index **accelerates** matching but is **not required** by the filing.
 
-* Example: **Women 35–40 blond weight≥200** →
+* **Term:** `attribute=value` (or a binned range).
+* **Postings:** the set of `slot_id`s containing that term.
 
-  ```
-  match = postings[gender=F] ∧ postings[age=35-39] ∧ postings[hair=blond] ∧ postings[weight≥200]
-  ```
-* Matching is done via bitmap intersections/unions.
+**Compiling a buy/query:** parse its predicate into Boolean ops over term postings (AND/OR/NOT) to produce a **lazy iterator over matching `slot_id`s**. Avoid materializing full per‑buy slot lists—advance the iterator on demand during linking.
 
-Buys are represented as:
+> Storage for postings (sorted IDs or compressed lists) is implementation‑specific and out of scope; no bitmap/roaring detail is required.
+
+---
+
+## 5) Assignment: Link → Award → Re‑link
+
+**Ad ordering.** Sort by **value** (optionally break ties by tighter supply or smaller goal); the filing requires only a comparable value.
+
+**Linking (tentative).** Each ad keeps a forward iterator over eligible slots. It tries to place **one link**; if it bumps a lower‑value link, the bumped ad re‑links **forward**.
+
+**Awarding (final).** Scan slots in ID order: award to the linked ad, transfer `take = min(slot.remaining, ad.remaining)`, clear link, then re‑link the winner forward if it still has `remaining > 0`.
+
+**Illustrative pseudocode (minimal):**
 
 ```c
-struct Buy {
-  uint32_t id;
-  float cpm;
-  uint32_t goal_total;   // impressions cap
-  uint32_t remaining;
-  Predicate pred;        // compiled predicate
-  BitmapIterator iter;   // lazy iterator over slots
-};
-```
-
----
-
-## 5. Allocation Algorithm
-
-### Overview
-
-The system assigns slots to buys using a **link → award → re-link** process:
-
-1. **Link:** Tentatively connect each buy to the first eligible slot it can fill.
-2. **Award:** Traverse slots; award to the highest-value linked buy.
-3. **Re-link:** Losing buys advance to their next eligible slots.
-
-This continues until all slots are processed or buys are capped.
-
-### Two-Pass Allocation
-
-* **Pass 1:** Block out slots in a query’s footprint. Allocate remaining slots to current buys. This shows true unsold inventory.
-* **Pass 2:** Open only the query’s footprint, add the query as a buy, and re-run allocation. This shows what the query would win.
-
-### Ordering Buys
-
-Sort buys before allocation to minimize conflicts:
-
-* Score = `CPM × (exclusivity/supply)^α`, where exclusivity measures how rare a buy’s slots are.
-* High-CPM, rare buys processed first; broad cheap buys last.
-
----
-
-## 6. Pseudocode
-
-### Linking
-
-```c
-bool try_link(Buy& b, BitmapIterator& it, BlockMask& blocked) {
+bool try_link(Ad &a, Iterator &it, const BlockMask &blocked) {
   while (it.has_next()) {
-    SlotID s = it.next();
+    uint32_t s = it.next();
     if (blocked.test(s)) continue;
-    if (DAT[s].linked == -1 || b.cpm > buys[DAT[s].linked].cpm) {
-      int bumped = DAT[s].linked;
-      DAT[s].linked = b.id;
-      if (bumped != -1)
-        try_link(buys[bumped], get_iterator(buys[bumped]), blocked);
+    int32_t cur = DAT[s].linked_ad;
+    if (cur == -1 || a.value > ads[cur].value) {
+      DAT[s].linked_ad = a.id;
+      if (cur != -1) try_link(ads[cur], iters[cur], blocked); // loser re-links forward
       return true;
     }
   }
   return false;
 }
-```
 
-### Awarding
-
-```c
-void assign_all(vector<Buy>& buys, BlockMask& blocked) {
-  for (Buy& b : buys) try_link(b, get_iterator(b), blocked);
-  for (SlotID s = 0; s < U; ++s) {
+void assign_all(vector<Ad> &ads, const BlockMask &blocked) {
+  for (Ad &a : ads) if (a.remaining > 0) try_link(a, iters[a.id], blocked);
+  for (uint32_t s = 0; s < U; ++s) {
     if (blocked.test(s)) continue;
-    int lb = DAT[s].linked;
-    if (lb == -1) continue;
-    Buy& w = buys[lb];
+    int32_t lid = DAT[s].linked_ad;
+    if (lid == -1) continue;
+    Ad &w = ads[lid];
+    if (w.remaining == 0 || remaining[s] == 0) { DAT[s].linked_ad = -1; continue; }
     uint32_t take = min(remaining[s], w.remaining);
-    remaining[s] -= take;
-    w.remaining -= take;
-    DAT[s].awarded = w.id;
-    DAT[s].linked = -1;
-    if (w.remaining > 0) try_link(w, get_iterator(w), blocked);
+    remaining[s] -= take; w.remaining -= take;
+    DAT[s].awarded_ad = w.id; DAT[s].linked_ad = -1;
+    if (w.remaining > 0) try_link(w, iters[w.id], blocked);
   }
 }
 ```
 
----
-
-## 7. Complexity
-
-* **Matching:** Bitmap ops ≈ O(posting size). Efficient with Roaring.
-* **Allocation:** Each buy iterator advances forward only. Complexity ≈ O(total conflicts).
-* **Memory:** Scales with slot universe + postings, not buys × slots.
+**Behavioral guarantees:** higher value wins; losers move only forward; caps enforced via `remaining`; partial awards allowed.
 
 ---
 
-## 8. Practical Notes
+## 6) Two‑Pass Flow (Queries + Unsold)
 
-* **Sharding:** Partition by site/placement/time to cut problem size.
-* **Pacing:** Use token buckets per time slice to avoid caps filling too early.
-* **Unsold inventory:** Directly observable from slots with `remaining > 0` after allocation.
-* **What-ifs:** Queries are buys; run two-pass allocation to see their effect.
+```c
+Bitmap Q = match(query);                  // query footprint (via index or other matcher)
+
+// Pass‑1: block query slots → allocate the rest
+BlockMask pass1 = Q;
+reset_DAT_and_remaining();
+assign_all(active_ads, pass1);
+collect_unsold(); // slots with remaining > 0
+
+// Pass‑2: inside query only; include the query as a buy
+BlockMask pass2 = UniverseMinus(Q);
+reset_DAT_and_remaining();
+vector<Ad> ads2 = active_ads; ads2.push_back(query_as_ad);
+assign_all(ads2, pass2);
+collect_query_results();
+```
+
+Outputs:
+
+* **Unsold inventory** from Pass‑1.
+* **What the query would win** from Pass‑2.
 
 ---
 
-## 9. Summary
+## 7) Worked Mini‑Example (compact)
 
-A scalable ad inventory system requires:
+* Slots `1..12`, unit weights.
+* Ads: `AD1(v=10, {1,3,7,10})`, `AD2(v=15, {2,3,10,12})`, `AD3(v=30, {4,8,9,10})`.
+* Query: `Q(v=20, {3,4,5,6})`.
 
-1. **Slot binning**: represent impressions as discrete bins.
-2. **Inverted index**: map attributes to slots for efficient buy matching.
-3. **Lazy iterators**: avoid materializing full sets for millions of buys.
-4. **Link → award → re-link** allocation: ensures high-value, capped buys get priority.
-5. **Two-pass planning**: reveals both true unsold inventory and query outcomes.
+**Pass‑1 (block 3–6):**
+Awards → `1→AD1`, `2→AD2`, `7→AD1`, `8→AD3`, `9→AD3`, `10→AD3`, `12→AD2`; `11` unsold.
 
-This approach handles millions of overlapping buys efficiently in both memory and compute.
+**Pass‑2 (only 3–6, include Q):**
+`3→Q` (beats AD1), `4→AD3` (beats Q), `5→Q`, `6→Q`.
+
+---
+
+## 8) Engineering Notes (kept tight)
+
+* **Sharding:** split by (site, placement, time bucket). Each shard owns its slots, index, and DAT.
+* **Lazy sets only:** store predicates + iterators, not per‑buy slot lists.
+* **Caps/pacing:** `remaining` enforces caps; pacing/priority can fold into **value** if needed.
+* **Incremental updates:** add/remove/update a buy → re‑link it (and any bumped chains); no global recompute.
+* **Complexity:** near‑linear in the number of visited edges thanks to O(1) slot access and forward‑only iterators.
+
+---
+
+## 9) What This Is *Not*
+
+* Not a live **ad server**. This computes **inventory & what‑ifs**; outputs can be exported to serving systems.
+* Not an LP/Max‑Flow solver; this emphasizes incremental, forward‑only assignment with constant‑time slot access.
+
+---
+
+## 10) Minimal Structures (inventory‑only)
+
+```c
+struct Slot     { uint32_t forecast, remaining; uint64_t attr_key; };
+struct DATEntry { int32_t  linked_ad, awarded_ad; };
+struct Ad {
+  int32_t id; float value; uint32_t goal_total, remaining;
+  Predicate pred; Iterator it; // iterator over eligible slot_ids
+};
+// Arrays: Slot slots[U]; DATEntry DAT[U]; uint32_t remaining[U];
+```
+
+> Keep hot fields (`remaining`, `linked_ad`, `awarded_ad`) in cache‑friendly arrays; 32‑bit IDs where feasible.
+
+---
+
+### Summary
+
+This design represents inventory as a **DAT of slots**, assigns via **link → award → re‑link** (with forward‑only movement), and uses a **two‑pass** method to surface **unsold inventory** and **query outcomes**. An **inverted index** is an **optional** but practical way to generate lazy iterators over eligible slots—no specific storage format is required. The result is a fast, incremental inventory engine aligned with the application’s core teachings.
