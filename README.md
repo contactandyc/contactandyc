@@ -18,14 +18,14 @@
 
 ### ✦ Archival Works & Algorithms
 
-A selection of ideas and systems I feel comfortable sharing, largely in the public domain at this point.
+A selection of algorithms and systems I've developed over my career, largely in the public domain at this point.
 
-* **Quicksort Improvement (2019)** — Designed a powerful improvement to quicksort/introsort. By reusing the pivot sample to detect when input is already sorted, reverse-sorted, or all-equal, the algorithm finishes in *O(n)* with a single verification pass. Yields 5–30× speedups for sorted inputs with no regressions on adversarial cases.
-* **Ad Inventory Overlapping Set Problem (2011–2012)** — Designed a real-time ad inventory model to handle millions of buys with overlapping targeting criteria using inverted indices and bitmap intersections. Enabled fast “what-if” queries and scalable allocation at web scale.
-* **Expected Frequency & Long Correlation (2009+)** — An algorithm for search and recommendations leveraging entire user histories. By adjusting local co-occurrence with an expected vs. actual frequency correction, it removes global popularity bias.
+* **Quicksort Improvement (2019)** — Designed an efficient modification to quicksort/introsort. By reusing the pivot sample to detect when input is already sorted, reverse-sorted, or all-equal, the algorithm finishes in *O(n)* with a single verification pass. Yields 5–30× speedups for sorted inputs with no regressions on adversarial cases.
+* **Ad Inventory Overlapping Set Problem (2011–2012)** — Designed a real-time ad inventory model to handle millions of buys with overlapping targeting criteria using inverted indices and bitmap intersections. Enabled accurate forecasting and scalable allocation at web scale.
+* **Expected Frequency & Long Correlation (2009+)** — An algorithm for search and recommendations leveraging entire user histories. By adjusting local co-occurrence with an expected vs. actual frequency correction, it systematically removes global popularity bias.
 * **Click-Based Search & Recommendations (2003–2005)** — A framework leveraging full user sessions (queries + clicks) to learn correlations, improving ranking, personalization, and localization.
-* **Efficient Near-Shingling (2001)** — A high-efficiency approach to near-duplicate detection approximating shingling accuracy at a fraction of the cost, utilizing title + first + 10 longest sentence hashes in dual forward/inverted indices.
-* **EzResult Search Engine (1998–1999)** — A web-scale search engine built and sold at age 21. Written entirely in C/C++/assembly, independently rediscovering inverted indices, tries, and cosine similarity. Supported instant index updates and was rated second only to Google in relevance by Yahoo at the time.
+* **Efficient Near-Shingling (2001)** — An approach to near-duplicate detection that approximates shingling accuracy while reducing storage and compute costs. Documents are reduced to title + first + 10 longest sentence hashes, indexed in dual forward/inverted indices.
+* **EzResult Search Engine (1998–1999)** — A distributed search engine written entirely in C/C++/assembly, independently utilizing inverted indices, tries, and cosine similarity. Supported instant index updates and was acquired in 1999.
 
 <br />
 
@@ -33,7 +33,7 @@ A selection of ideas and systems I feel comfortable sharing, largely in the publ
 
 ### ✦ The C Infrastructure Ecosystem
 
-I've built a cohesive ecosystem of modern C components—covering memory, parsing, networking, embeddings, and file I/O—designed with **performance, simplicity, and composability** in mind.
+These libraries form a cohesive ecosystem of modern C components—covering memory management, parsing, networking, embeddings, and file I/O—designed strictly for **performance, simplicity, and composability**.
 
 <table>
   <tr>
