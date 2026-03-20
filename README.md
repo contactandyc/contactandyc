@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">The Curated Manuscript</h1>
+  <h1 align="center">Andy Curtis Github Profile</h1>
   <p align="center">
     <i>Selective works, algorithmic research, and high-performance C infrastructure by Andy Curtis.</i>
   </p>
