@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">Andy Curtis Github Profile</h1>
+  <h1 align="center">Github Profile for Andy Curtis</h1>
   <p align="center">
     <i>Selective works, algorithmic research, and high-performance C infrastructure by Andy Curtis.</i>
   </p>
@@ -33,36 +33,45 @@ A selection of algorithms and systems I've developed over my career, largely in 
 
 ### ✦ The C Infrastructure Ecosystem
 
-These libraries form a cohesive ecosystem of modern C components—covering memory management, parsing, networking, embeddings, and file I/O—designed strictly for **performance, simplicity, and composability**.
+A modular, multi-tier dependency graph of C libraries built for out-of-core data processing, search, and system reliability. Designed strictly for performance, simplicity, and composability.
 
-<table>
+<table width="100%" style="border: none;">
   <tr>
     <td width="50%" valign="top">
-      <h4>🧠 Memory & Foundations</h4>
+      <h4>🧱 Foundation & Memory</h4>
       <ul>
-        <li><code><a href="https://github.com/contactandyc/a-memory-library">a-memory-library</a></code> Core building blocks (alloc, pool, buffer) with zero-overhead release builds.</li>
-        <li><code><a href="https://github.com/contactandyc/the-macro-library">the-macro-library</a></code> Type-safe containers and algorithms (sort, bsearch, map, heap).</li>
+        <li><code><a href="https://github.com/contactandyc/a-memory-library">a-memory-library</a></code> Zero-overhead memory pools, auto-growing buffers, and debug-wrapped allocators.</li>
+        <li><code><a href="https://github.com/contactandyc/the-macro-library">the-macro-library</a></code> Type-safe C macros for core algorithms (introsort, bsearch, red-black trees, heaps).</li>
+        <li><code><a href="https://github.com/contactandyc/a-bitset-library">a-bitset-library</a></code> Expandable bitset structures for setting, querying, and bitwise operations.</li>
       </ul>
-      <h4>🕸️ Networking & Async</h4>
+      <h4>⚙️ Distributed Processing & I/O</h4>
       <ul>
-        <li><code><a href="https://github.com/contactandyc/a-curl-library">a-curl-library</a></code> High-level libcurl abstraction with an event loop, retry semantics, and rate limiting.</li>
-        <li><code><a href="https://github.com/contactandyc/a-curl-openai-plugin">a-curl-openai-plugin</a></code> Builder-style API for OpenAI endpoints with streaming SSE.</li>
-        <li><code><a href="https://github.com/contactandyc/restinio-c">restinio-c</a></code> C wrapper over C++ Restinio HTTP framework.</li>
+        <li><code><a href="https://github.com/contactandyc/a-map-reduce-library">a-map-reduce-library</a></code> Single-node, partitioned DAG execution engine for out-of-core data processing and pipelining.</li>
+        <li><code><a href="https://github.com/contactandyc/the-io-library">the-io-library</a></code> Record-oriented file processing with transparent compression, partitioning, and sort-merging.</li>
+        <li><code><a href="https://github.com/contactandyc/the-lz4-library">the-lz4-library</a></code> Fast LZ4 compression and decompression primitives.</li>
+      </ul>
+      <h4>🕸️ Networking & Security</h4>
+      <ul>
+        <li><code><a href="https://github.com/contactandyc/a-curl-library">a-curl-library</a></code> Async event-loop wrapper over libcurl with rate-limiting, backoffs, and dependency scheduling.</li>
+        <li><code><a href="https://github.com/contactandyc/a-curl-openai-plugin">a-curl-openai-plugin</a></code> Builder API on the curl event loop for handling OpenAI streams and structured outputs.</li>
+        <li><code><a href="https://github.com/contactandyc/an-encryption-library">an-encryption-library</a></code> Secure key generation and in-place AES-GCM encryption/decryption.</li>
       </ul>
     </td>
     <td width="50%" valign="top">
       <h4>🗂️ Parsing & Serialization</h4>
       <ul>
-        <li><code><a href="https://github.com/contactandyc/a-json-library">a-json-library</a></code> Fast JSON parser integrated with memory pools.</li>
-        <li><code><a href="https://github.com/contactandyc/sql-parser-library">sql-parser-library</a></code> Lightweight SQL expression parser and evaluator.</li>
-        <li><code><a href="https://github.com/contactandyc/a-json-schema-builder-library">a-json-schema-builder</a></code> Programmatic JSON Schema builder in C.</li>
+        <li><code><a href="https://github.com/contactandyc/a-json-library">a-json-library</a></code> Fast JSON parser integrated directly with memory pools.</li>
+        <li><code><a href="https://github.com/contactandyc/a-json-sax-library">a-json-sax-library</a></code> High-speed, destructive/in-place SAX parser for JSON.</li>
+        <li><code><a href="https://github.com/contactandyc/sql-parser-library">sql-parser-library</a></code> Lightweight SQL expression tokenizer, parser, and AST evaluator.</li>
+        <li><code><a href="https://github.com/contactandyc/a-json-schema-builder-library">a-json-schema-builder</a></code> Programmatic C helpers for dynamically building JSON schemas.</li>
       </ul>
-      <h4>🔎 NLP, Search & I/O</h4>
+      <h4>🔎 NLP, Search & ML</h4>
       <ul>
-        <li><code><a href="https://github.com/contactandyc/embedding-library">embedding-library</a></code> SIMD-accelerated primitives for vector embeddings.</li>
-        <li><code><a href="https://github.com/contactandyc/search-index-library">search-index-library</a></code> Compact inverted index engine.</li>
-        <li><code><a href="https://github.com/contactandyc/the-io-library">the-io-library</a></code> Record-oriented file processing (map-reduce style).</li>
-        <li><code><a href="https://github.com/contactandyc/a-sentence-chunker-library">a-sentence-chunker-library</a></code> Fast UTF-8/ASCII sentence segmentation.</li>
+        <li><code><a href="https://github.com/contactandyc/search-index-library">search-index-library</a></code> Compact inverted index engine with BM25 helpers and snippet generation.</li>
+        <li><code><a href="https://github.com/contactandyc/embedding-library">embedding-library</a></code> SIMD-accelerated primitives for vector embeddings (dot product, cosine) and int8 quantization.</li>
+        <li><code><a href="https://github.com/contactandyc/a-tokenizer-library">a-tokenizer-library</a></code> Tokenization and cursor logic for parsing queries and expressions.</li>
+        <li><code><a href="https://github.com/contactandyc/stemmer-library">stemmer-library</a></code> Word stemming with an integrated caching mechanism.</li>
+        <li><code><a href="https://github.com/contactandyc/a-sentence-chunker-library">a-sentence-chunker-library</a></code> Fast UTF-8/ASCII sentence segmentation with length constraint re-chunking.</li>
       </ul>
     </td>
   </tr>
@@ -72,22 +81,22 @@ These libraries form a cohesive ecosystem of modern C components—covering memo
 
 ---
 
-### ✦ Featured Repositories
+### ✦ Core Infrastructure
 
 <div align="center">
-  <a href="https://github.com/contactandyc/another-c-library">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=contactandyc&repo=another-c-library&theme=transparent&hide_border=true&title_color=0057c0&text_color=414755&icon_color=0057c0" alt="another-c-library" />
+  <a href="https://github.com/contactandyc/a-map-reduce-library">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=contactandyc&repo=a-map-reduce-library&theme=transparent&hide_border=true&title_color=0057c0&text_color=414755&icon_color=0057c0" alt="a-map-reduce-library" />
   </a>
-  <a href="https://github.com/contactandyc/the-macro-library">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=contactandyc&repo=the-macro-library&theme=transparent&hide_border=true&title_color=0057c0&text_color=414755&icon_color=0057c0" alt="the-macro-library" />
+  <a href="https://github.com/contactandyc/search-index-library">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=contactandyc&repo=search-index-library&theme=transparent&hide_border=true&title_color=0057c0&text_color=414755&icon_color=0057c0" alt="search-index-library" />
   </a>
 </div>
 <div align="center">
-  <a href="https://github.com/contactandyc/scaffold-repo">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=contactandyc&repo=scaffold-repo&theme=transparent&hide_border=true&title_color=0057c0&text_color=414755&icon_color=0057c0" alt="scaffold-repo" />
+  <a href="https://github.com/contactandyc/a-memory-library">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=contactandyc&repo=a-memory-library&theme=transparent&hide_border=true&title_color=0057c0&text_color=414755&icon_color=0057c0" alt="a-memory-library" />
   </a>
-  <a href="https://github.com/contactandyc/a-json-library">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=contactandyc&repo=a-json-library&theme=transparent&hide_border=true&title_color=0057c0&text_color=414755&icon_color=0057c0" alt="a-json-library" />
+  <a href="https://github.com/contactandyc/the-macro-library">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=contactandyc&repo=the-macro-library&theme=transparent&hide_border=true&title_color=0057c0&text_color=414755&icon_color=0057c0" alt="the-macro-library" />
   </a>
 </div>
 
