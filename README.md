@@ -1,12 +1,3 @@
-Yes, you definitely should! Adding these tools to your profile highlights a completely different, highly valuable dimension of your skillset: **Platform Engineering and DevOps automation**. It shows that not only can you build hyper-optimized, low-level C algorithms, but you also know how to build the tooling required to manage them at scale.
-
-I recommend adding a new section specifically for this, right after your C Ecosystem table. This keeps your low-level systems grouped together while carving out a dedicated space for your orchestrator.
-
-Here is the updated profile README. I added a **"✦ Fleet Management & Orchestration"** section to showcase `scaffold-repo` and its template registry.
-
-***
-
-```html
 <div align="center">
   <h1 align="center">Github Profile for Andy Curtis</h1>
   <p align="center">
