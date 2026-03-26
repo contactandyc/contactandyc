@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">Github Profile for Andy Curtis</h1>
+  <h1 align="center">GitHub Profile for Andy Curtis</h1>
   <p align="center">
     <i>Selective works, algorithmic research, and high-performance C infrastructure by Andy Curtis.</i>
   </p>
@@ -83,10 +83,10 @@ A modular, multi-tier dependency graph of C libraries built for out-of-core data
 
 ### ✦ Fleet Management & Orchestration
 
-Tools designed to tame the complexity of multi-repo, polyglot ecosystems through declarative configuration and GitOps automation.
+Tools designed to tame the complexity of multi-repo ecosystems through declarative configuration and GitOps automation.
 
 * **[scaffold-repo](https://github.com/contactandyc/scaffold-repo)** — A declarative fleet manager and build orchestrator. Resolves dynamic dependency graphs, enforces OSS license compliance, and automates Git branching/releases across dozens of interconnected micro-repos via a single Python CLI.
-* **[scaffold-templates](https://github.com/contactandyc/scaffold-templates)** — The centralized Template Registry powering `scaffold-repo`. Defines language stacks (C/CMake, Python), organizational profiles, and dynamic Jinja2 file routing to prevent vendor lock-in.
+* **[scaffold-templates](https://github.com/contactandyc/scaffold-templates)** — The centralized Template Registry powering `scaffold-repo`. Defines language stacks (C/CMake, Python), organizational profiles, and dynamic Jinja2 file routing to prevent vendor lock-in.  Clone this to define your own fleet!
 
 <br />
 
